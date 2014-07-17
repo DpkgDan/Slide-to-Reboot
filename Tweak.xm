@@ -1,43 +1,20 @@
-#import <Foundation/NSTask.h>
-#import <UIKit/UIKit.h>
-#import <CoreFoundation/CoreFoundation.h>
-#import "substrate.h"
+#import "Headers.h"
 
-@interface _UIActionSliderKnob : UIView
-
-- (NSArray*)_subviewCache;
-
-@end
-
-@interface _UIActionSlider : UIView
-
-@property (readwrite) NSString *trackText;
-@property (readwrite) UIImage *knobImage;
-
-- (_UIActionSliderKnob*)_knobView;
-- (UIImageView*)knobImageView;
-- (void)setNewKnobImage:(UIImage*)image;
-
-@end
-
-@interface UIApplication (Reboot)
-
-- (void)reboot;
-
-@end
-
-@interface UIImageView (Layer)
-
-- (CALayer*)_layer;
-
-@end
-
-static UIImage *rebootKnobImage = [UIImage imageWithContentsOfFile:
-@"/Library/Application Support/Slide to Reboot/RebootKnob@2x.png"];
-//static _UIActionSliderKnob *cachedView = nil;
+static UIImage *rebootKnobImage =  [UIImage imageWithContentsOfFile:
+		@"/Library/Application Support/Slide to Reboot/RebootKnob.png"];
 static BOOL powerDownMode = YES;
 
 %hook _UIActionSlider
+
+- (void)setKnobImage:(UIImage*)image
+{
+	%orig();
+	
+	UITapGestureRecognizer *knobTap = [[UITapGestureRecognizer alloc] initWithTarget: self 
+		action:@selector(knobTapped)];
+	knobTap.numberOfTapsRequired = 1;
+	[[self _knobView] addGestureRecognizer: knobTap];
+}
 
 %new
 - (void)setNewKnobImage:(UIImage*)image
@@ -57,19 +34,9 @@ static BOOL powerDownMode = YES;
 		powerDownMode = NO;
 	} else {
 		self.trackText = @"slide to power off";
-		[self setKnobImage: [UIImage imageNamed: @"PowerDownKnob"]];
+		[self setNewKnobImage: [UIImage imageNamed: @"PowerDownKnob"]];
 		powerDownMode = YES;
 	}
-}
-
-- (void)setKnobImage:(UIImage*)image
-{
-	%orig();
-	
-	UITapGestureRecognizer *knobTap = [[UITapGestureRecognizer alloc] initWithTarget: self 
-		action:@selector(knobTapped)];
-	knobTap.numberOfTapsRequired = 1;
-	[[self _knobView] addGestureRecognizer: knobTap];
 }
 
 %end

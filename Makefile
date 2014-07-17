@@ -5,7 +5,7 @@ include theos/makefiles/common.mk
 
 TWEAK_NAME = SlidetoReboot
 SlidetoReboot_FILES = Tweak.xm
-SlidetoReboot_FRAMEWORKS = Foundation UIKit CoreFoundation
+SlidetoReboot_FRAMEWORKS = UIKit
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 
