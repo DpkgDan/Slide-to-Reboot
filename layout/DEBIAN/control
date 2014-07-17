@@ -1,0 +1,10 @@
+Package: com.dpkgdan.slidetoreboot
+Name: Slide to Reboot
+Depends: mobilesubstrate
+Architecture: iphoneos-arm
+Description: An awesome MobileSubstrate tweak!
+Maintainer: Dan Saba
+Author: Dan Saba
+Section: Tweaks
+Version: 0.0.1-37
+Installed-Size: 72
