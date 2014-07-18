@@ -1,7 +1,6 @@
 #import "Headers.h"
 
-static UIImage *rebootKnobImage =  [UIImage imageWithContentsOfFile:
-		@"/Library/Application Support/Slide to Reboot/RebootKnob.png"];
+static UIImage *rebootKnobImage = nil;
 static BOOL powerDownMode = YES;
 
 %hook _UIActionSlider
@@ -22,12 +21,15 @@ static BOOL powerDownMode = YES;
 	UIImageView *knobImageView = MSHookIvar<UIImageView*>(self, "_knobImageView");
 	UIImage *newKnobImage = [image imageWithRenderingMode: UIImageRenderingModeAlwaysTemplate];
 	knobImageView.image = newKnobImage;
-	[knobImageView setTintColor: [UIColor redColor]];
+	knobImageView.tintColor = [UIColor redColor];
 }
 
 %new
 - (void)knobTapped
 {
+	if (!rebootKnobImage)
+		rebootKnobImage = [UIImage imageWithContentsOfFile:
+		@"/Library/Application Support/Slide to Reboot/RebootKnob.png"];
 	if (powerDownMode){
 		self.trackText = @"slide to reboot";
 		[self setNewKnobImage: rebootKnobImage];
